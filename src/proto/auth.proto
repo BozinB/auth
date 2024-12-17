@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package auth;
+
+service AuthService {
+  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
+  rpc LoginUser (LoginUserRequest) returns (LoginUserResponse);
+  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
+  rpc GetAllUsers (GetAllUsersRequest) returns (GetAllUsersResponse);
+}
+
+message CreateUserRequest {
+  string username = 1;
+  string email = 2;
+  string password = 3;
+  repeated string roles = 4;
+  string client = 5;
+}
+
+message CreateUserResponse {
+  string message = 1;
+  string userId = 2;
+}
+
+message LoginUserRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginUserResponse {
+  string username = 1;
+  string client = 2;
+  string email = 3;
+  repeated string roles = 4;
+  bool isActive = 5;
+  map<string, string> metadata = 6;
+}
+
+message DeleteUserRequest {
+  string id = 1;
+}
+
+message DeleteUserResponse {
+  string message = 1;
+}
+
+message GetAllUsersRequest {}
+
+message GetAllUsersResponse {
+  repeated User users = 1;
+}
+
+message User {
+  string username = 1;
+  string client = 2;
+  string email = 3;
+  repeated string roles = 4;
+  bool isActive = 5;
+  map<string, string> metadata = 6;
+}
