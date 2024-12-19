@@ -18,13 +18,11 @@ export const AuthService = {
   LoginUser: async (call, callback) => {
     try {
       const { email, password } = call.request;
-
       if (!email || !password) {
-        callback({
+        return callback({
           code: grpc.status.INVALID_ARGUMENT,
           message: 'Email and password are required',
         });
-        return;
       }
 
       const user = await UserController.loginUser({ email, password });
@@ -48,7 +46,6 @@ export const AuthService = {
       }
 
       const { id } = call.request;
-
       const result = await UserController.deleteUser(id);
       callback(null, { message: 'User deleted successfully', result });
     } catch (error) {

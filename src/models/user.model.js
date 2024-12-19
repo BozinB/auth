@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
 const { Schema } = mongoose;
 
@@ -6,13 +7,13 @@ const userSchema = new Schema(
   {
     client: {
       type: String,
-      required: true, 
-      index: true, 
+      required: true,
+      index: true,
     },
     username: {
       type: String,
-      required: true, 
-      trim: true, 
+      required: true,
+      trim: true,
     },
     email: {
       type: String,
@@ -21,19 +22,19 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      required: true, 
+      required: true,
     },
     roles: {
       type: [String],
-      default: ['user'], 
+      default: ['user'],
     },
     isActive: {
       type: Boolean,
-      default: true, 
+      default: true,
     },
     metadata: {
       type: Map,
-      of: String, 
+      of: String,
     },
   },
   {
@@ -41,14 +42,13 @@ const userSchema = new Schema(
   }
 );
 
-// Compound index for unique client-email and client-username
+// Compound indexes
 userSchema.index({ client: 1, username: 1 }, { unique: true });
 userSchema.index({ client: 1, email: 1 }, { unique: true });
 
 // Pre-save hook for password hashing
 userSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
-    const bcrypt = await import('bcrypt');
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
   }
@@ -56,10 +56,8 @@ userSchema.pre('save', async function (next) {
 });
 
 // Method to check passwords
-userSchema.methods.comparePassword = async function (candidatePassword) {
-  const bcrypt = await import('bcrypt');
+userSchema.methods.comparePassword = function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-// Export the User Model
 export const User = mongoose.model('User', userSchema);

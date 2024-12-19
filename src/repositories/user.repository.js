@@ -6,25 +6,25 @@ export const UserRepository = {
     return user.save();
   },
 
-  findUserByEmailAndClient: async (email, client) => {
-    return User.findOne({ email, client });
+  findUserByEmailAndClient: (email, client) => {
+    return User.findOne({ email, client }).exec();
   },
 
-  findUserByEmail: async (email) => {
+  findUserByEmail: (email) => {
     return User.findOne({ email }).exec();
   },
 
-  findUserById: async (id) => {
+  findUserById: (id) => {
     return User.findById(id).exec();
   },
 
-  deleteUserById: async (id) => {
+  deleteUserById: (id) => {
     return User.findByIdAndDelete(id).exec();
   },
 
-  getAllUsers: async () => {
+  getAllUsers: () => {
+    // Consider limiting fields if not all are needed:
+    // return User.find({}, 'username client email roles isActive').exec();
     return User.find({}).exec();
   },
-
 };
-
